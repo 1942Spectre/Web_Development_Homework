@@ -62,6 +62,8 @@ ctx.strokeStyle = myColor;
 /*Set initial size conditions*/
 var mySize = size.value;
 
+temp_ctx.lineWidth = mySize;
+ctx.lineWidth = mySize;
 
 brush.style.border = "2px solid red";
 canvas.style.cursor = "pointer";
@@ -94,9 +96,9 @@ function colorChange() {
 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 function sizeChange() {
-	new_size = size.value;
-	ctx.lineWidth = new_size;
-	temp_ctx.lineWidth = new_size;
+	mySize = size.value;
+	temp_ctx.lineWidth = mySize;
+	ctx.lineWidth = mySize;
 }
 
 
@@ -193,7 +195,7 @@ function drawrect(x,y,context)
 	if(is_drawing)
 	{
 	context.beginPath();
-	context.rect(start_x,start_y,x,y);
+	context.rect(start_x,start_y,x-start_x,y-start_y);
 	context.stroke();
 	}
 }
