@@ -9,6 +9,7 @@ var temp_canvas = document.getElementById("temp_canvas");
 var temp_ctx = temp_canvas.getContext("2d");
 
 var is_drawing;
+var erase;
 
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
@@ -110,8 +111,13 @@ function getCoordinates(canvas, e) {
 
 function mouseDown(e) {
 	
-	ctx.strokeStyle = myColor;
-	temp_ctx.strokeStyle = myColor;
+	if(!pen){
+		ctx.strokeStyle = myColor;
+		temp_ctx.strokeStyle = myColor;
+
+		ctx.lineWidth = mySize;
+		temp_ctx.lineWidth = mySize;
+	}
 
 	is_drawing = true;
 	var coordinates = getCoordinates(canvas, e); // GETS THE COORDINATES;
@@ -301,7 +307,7 @@ function triClick(){
 
 	temp_ctx.lineWidth = mySize;
 	var brushColor = document.getElementById("myColor");
-	temp_ctx.strokeStyle = brushColor.value; 
+	myColor = brushColor.value; 
 
 	rect.style.border = "none";
 	brush.style.border = "none";
@@ -309,7 +315,7 @@ function triClick(){
 	Pen.style.border="none";
 	tri.style.border = "2px solid red";
 	circle.style.border = "none";
-
+	pen = false;
 	fill.style.display = "initial"
 
 	if(will_fill){
@@ -349,7 +355,7 @@ function circleClick(){
 
 	temp_ctx.lineWidth = mySize;
 	var brushColor = document.getElementById("myColor");
-	temp_ctx.strokeStyle = brushColor.value; 
+	myColor = brushColor.value; 
 
 	rect.style.border = "none";
 	brush.style.border = "none";
@@ -358,7 +364,7 @@ function circleClick(){
 	tri.style.border = "none";
 	circle.style.border = "2px solid red"; 
 	fill.style.display = "initial";
-	
+	pen = false;
 	if(will_fill){
 		fillClick();
 	}
@@ -382,7 +388,7 @@ function rectClick()
 
 	temp_ctx.lineWidth = mySize;
 	var brushColor = document.getElementById("myColor");
-	temp_ctx.strokeStyle = brushColor.value; 
+	myColor = brushColor.value; 
 
 	brush.style.border = "none";
 	eraser.style.border = "none";
@@ -391,7 +397,7 @@ function rectClick()
 	tri.style.border = "none";
 	circle.style.border = "none";
 	fill.style.display = "initial";
-	
+	pen = false;
 	if(will_fill){
 		fillClick();
 	}
@@ -418,7 +424,7 @@ function brushClick() {
 	ctx.lineWidth = mySize;
 	
 	var brushColor = document.getElementById("myColor");
-	ctx.strokeStyle = brushColor.value; 
+	myColor = brushColor.value; 
 	brush.style.border = "2px solid red";
 	eraser.style.border = "none";
 	Pen.style.border="none";
@@ -427,6 +433,7 @@ function brushClick() {
 	circle.style.border = "none";
 	fill.style.display = "none";
 
+	pen = false;
     drawing_shape = "none";
 
 	canvas.addEventListener("mousedown", mouseDown, false); 
@@ -443,7 +450,8 @@ function eraserClick() {
 	btnrange.disabled=false;
 	Colopicker.disabled=true;
 	ctx.lineWidth = mySize;
-	ctx.strokeStyle = "white";
+	myColor = "white";
+	pen = false;
 
 	eraser.style.border = "2px solid red";
 	brush.style.border = "none";
@@ -482,6 +490,7 @@ function penclick() {
 	tri.style.border = "none";
 	circle.style.border = "none";
 	fill.style.display = "none";
+	pen = true;
 
 	canvas.addEventListener("mousedown", mouseDown, false);
 	canvas.addEventListener("mousemove", mouseMove, false);
