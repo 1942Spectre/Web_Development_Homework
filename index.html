@@ -2,7 +2,7 @@
 	<html>
 
 		<head>
-			<title>Drawing Application</title>
+			<title> Simple paint Homework</title>
 			<meta charset="utf-8">
 			<meta name="viewport" content="width=device-width, initial-scale=1.0">
 			<link rel="stylesheet" type="text/css" href="style.css" />
@@ -11,20 +11,55 @@
 		<body>
 			<div id="toolbar">
 				<div id="colors">Color: <input type="color" value="#ffff00" name="myColor" id="myColor"></div>
-				<div id="range">Size: 1<input type="range" id="myRange"  value="5" min="1" max="100">100</div>
-				<button id="Pen"><img src="pen.png" width="22px" ></button> 
-				<button id="brush"><img src="brush.png"></button>
-				<button id="erase"><img src="eraser.png"></button>
-				<button id="rect"><img src="rect.png" style="width: 22px; height: 25px;"></button>
-				<button id="tri"><img src="triangle.jpg" style="width: 22px; height: 25px;"> </button>
-			    
-				<a href="" id="saveLink"><button id="save">Save</button></a>
-				<button id="reset">Reset</button>
-				<br>
-			</div>
+				
+				<div id="range">
+					Range: 1<input type="range" id="myRange"  value="5" min="1" max="100">100</div>
+				
+				
+				<button id="brush" style="background: none;"><img src="brush.png" id="brus"></button>
+				<button id="erase"><img src="eraser.png" id="ere"></button>
+				<button id="Pen" ><img src="pen.png" id="pe" ></button> 
+			
+			
+			
+					
+			<div id="shapes">
+				
+				<button id="rect"><img src="Rectangle.png" id="rec"></button>
+				
+				<button id="tri"  ><img src="triangle.png" id="tria"></button> 
+
+				<button id="circle"><img src="circle.png" id="circ"></button>
+
+				<button id="fill"><img src="fill.png" id="fill1"></button>
+		
+		</div>
+	</div>
+
+	<a href="" id="saveLink">  <button id="save">
+		<span class="button__text">Save</span>
+		<span class="button__icon">
+			<ion-icon name="download-outline"></ion-icon>
+		</span>
+	  </button> </a>
+		
+			
+			<button  id="reset">
+				<span class="button__text">Reset</span>
+				<span class="button__icon">
+					<ion-icon name="refresh-outline"></ion-icon>
+				</span>
+			  </button>
+
+				
+			
+			
 			<canvas id = "temp_canvas"></canvas>
 			<canvas id="canvas"></canvas>
-			<script src="new_script.js"></script>
+			<script src="script.js">
+				
+			</script>
+			<script src="https://unpkg.com/ionicons@5.4.0/dist/ionicons.js"></script>
 		</body>
 		
 	</html>
