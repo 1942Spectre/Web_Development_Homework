@@ -2,7 +2,7 @@
 	AUTHORS
 	Ahmet Hakan Afşin B1910.033028
 	Gele Hasan B1910.033066
-	Onur Çetrefil B1810. 033021
+	Onur Çetrefil B1810.033021
 */ 
 
 * {
@@ -131,7 +131,7 @@ canvas {
 
 	
 }
-#tria,#rec,#brus,#pe,#circ,#fill1 {
+#tria,#rec,#brus,#pe,#circ,#fill1,#un {
 	width: 22px; height: 25px;
 
 
@@ -145,7 +145,7 @@ canvas {
 }
 
 
-#brush, #erase, #Pen	{
+#brush, #erase, #Pen,#undo{
 	position: relative;
 	float: left;
 	height: 30px;

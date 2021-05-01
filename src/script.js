@@ -1,7 +1,7 @@
 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 //Ahmet Hakan Afşin B1910.033028
 //Gele Hasan B1910.033066
-//Onur Çetrefil B1810. 033021
+//Onur Çetrefil B1810.033021
 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
@@ -19,6 +19,8 @@ var temp_ctx = temp_canvas.getContext("2d");
 
 var is_drawing;
 var erase;
+
+var hist = [canvas.toDataURL()];
 
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
@@ -56,6 +58,7 @@ var tri = document.getElementById("tri");
 var circle = document.getElementById("circle");
 var fill = document.getElementById("fill");
 var toolbar = document.getElementById("toolbar");
+var undo = document.getElementById("undo");
 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
@@ -119,7 +122,7 @@ function getCoordinates(canvas, e) {
 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 function mouseDown(e) {
-	
+
 	if(!pen){
 		ctx.strokeStyle = myColor;
 		temp_ctx.strokeStyle = myColor;
@@ -143,33 +146,56 @@ function mouseDown(e) {
 			{triangle_state = 1;
 				x1 = positionX;
 				y1 = positionY;
+				hist.push(canvas.toDataURL());
+
+				if(hist.length > 10){
+					hist.shift();
+				}
 			}
-		}
+			
+			else if(triangle_state == 2){
+				temp_ctx.clearRect(0,0,temp_canvas.width,temp_canvas.height);
+				x3 = coordinates.x;
+				y3 = coordinates.y;
+				DrawTriangle(x2,x3,y2,y3,ctx);
+				is_drawing = false;
+				triangle_state = 0;
+				}
+			else if(drawing_shape == "circle"){
+				hist.push(canvas.toDataURL());
+				if(hist.length > 10){
+						hist.shift();
+					}	
+				return;
+
+				}
+
+			}
 
 		else{
 			x1 = positionX;
         	y1 = positionY;
+			hist.push(canvas.toDataURL());
+
+			if(hist.length > 10){
+				hist.shift();
+			}
 		}
     }
 
-	if(triangle_state == 2){
-		console.log("debug messagee");
-		temp_ctx.clearRect(0,0,temp_canvas.width,temp_canvas.height);
-		x3 = coordinates.x;
-		y3 = coordinates.y;
-		DrawTriangle(x2,x3,y2,y3,ctx);
-		is_drawing = false;
-		triangle_state = 0;
-	}
 
-	if(drawing_shape == "circle"){
-		return;
-	}
-
+	if(drawing_shape == "none")
+	{
 	ctx.beginPath();
 	ctx.moveTo(positionX, positionY);
 	ctx.lineTo(positionX, positionY);
 	ctx.stroke();
+	hist.push(canvas.toDataURL());
+
+	if(hist.length > 10){
+		hist.shift();
+	}
+	}
 
 }
 
@@ -185,7 +211,6 @@ function mouseMove(e) {
 		else if(drawing_shape == "rect"){
         temp_ctx.clearRect(0,0,temp_canvas.width,temp_canvas.height);
         DrawRect(positionX,positionY,temp_ctx);
-		console.log("debug message");
     }
     else if(drawing_shape == "triangle"){
         temp_ctx.clearRect(0,0,temp_canvas.width,temp_canvas.height);
@@ -232,7 +257,6 @@ function DrawCircle(posx,posy,context){
 
 function DrawRect(posx,posy,context){
     if(is_drawing){
-		console.log("debug message 2");
 		context.beginPath();
         context.rect(x1,y1,posx-x1,posy-y1);
         canvas.style.cursor = "pointer";
@@ -247,7 +271,6 @@ function DrawRect(posx,posy,context){
 }
 
 function DrawTriangle(x2,x3,y2,y3,context){
-    if(1){
         context.beginPath();
         context.moveTo(x1,y1);
         context.lineTo(x2,y2);
@@ -258,7 +281,6 @@ function DrawTriangle(x2,x3,y2,y3,context){
 			context.fill();
 		}
         context.stroke();
-    }
 }
 
 function DrawLine(x1,x2,y1,y2,context){
@@ -273,8 +295,8 @@ function DrawLine(x1,x2,y1,y2,context){
 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 function mouseRelease(e) {
-	console.log(drawing_shape);
-	console.log(triangle_state);
+
+
     var coordinates = getCoordinates(temp_canvas,e);
 	
 	canvas.style.cursor = "default"; 
@@ -294,7 +316,6 @@ function mouseRelease(e) {
 			y2 = coordinates.y;
 			DrawLine(x1,x2,y1,y2,temp_ctx);
 			triangle_state = 2;
-			console.log("debug message triangle");
 			return;
 		}
     }
@@ -304,6 +325,21 @@ function mouseRelease(e) {
 	}
     is_drawing = false; 
 
+
+}
+
+function undofunc(){
+	
+		if(hist.length!=0)
+		{
+		ctx.clearRect(0,0,canvas.width,canvas.height);
+		var img = new Image;
+		img.src = hist.pop();
+
+		img.onload= () => {ctx.drawImage(img,0,0);}
+		}
+
+	
 }
 
 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -341,8 +377,6 @@ function triClick(){
 	temp_canvas.addEventListener("mousedown",mouseDown,false);
 	temp_canvas.addEventListener("mousemove",mouseMove,false);
 	temp_canvas.addEventListener("mouseup",mouseRelease,false);
-
-	console.log("rect selected");
 
 	temp_canvas.style.zIndex = 100;
 	canvas.style.zIndex = 0;
@@ -421,7 +455,6 @@ function rectClick()
 	temp_canvas.addEventListener("mousemove",mouseMove,false);
 	temp_canvas.addEventListener("mouseup",mouseRelease,false);
 
-	console.log("rect selected");
 
 	temp_canvas.style.zIndex = 100;
 	canvas.style.zIndex = 0;
@@ -535,7 +568,6 @@ function resetClick() {
 
 function saveClick() {
 	var data = canvas.toDataURL(); //encodes image information into a base 64 format
-	console.log(data);
 	saveLink.href = data;
 	saveLink.download = "myImage.png";
 }
@@ -556,6 +588,7 @@ function saveClick() {
 	circle.addEventListener("click",circleClick);
 	fill.addEventListener("click",fillClick);
 	toolbar.addEventListener("mousemove",e => is_drawing = false);
+	undo.addEventListener("click",undofunc);
 	brushClick();
 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
